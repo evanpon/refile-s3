@@ -67,7 +67,8 @@ module Refile
         original_filename = uploadable.original_filename
         extension = 'jpg'
         extension = $1 if original_filename =~ /.+\.(.+)$/
-        object(id).put(body: uploadable, content_length: uploadable.size, metadata: {extension: extension})
+        object(id).put(body: uploadable, content_length: uploadable.size, 
+                       content_type: uploadable.content_type, metadata: {extension: extension})
       end
 
       Refile::File.new(self, id)
