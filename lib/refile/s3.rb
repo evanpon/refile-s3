@@ -64,7 +64,10 @@ module Refile
       if uploadable.is_a?(Refile::File) and uploadable.backend.is_a?(S3) and uploadable.backend.access_key_id == access_key_id
         object(id).copy_from(copy_source: [Refile.backends['cache'].bucket.name, uploadable.backend.object(uploadable.id).key].join("/"))
       else
-        object(id).put(body: uploadable, content_length: uploadable.size)
+        original_filename = uploadable.original_filename
+        extension = 'jpg'
+        extension = $1 if original_filename =~ /.+\.(.+)$/
+        object(id).put(body: uploadable, content_length: uploadable.size, metadata: {extension: extension})
       end
 
       Refile::File.new(self, id)
